@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        div{
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div ng-bind="user.name"></div>
+    <div ng-bind="user.age"></div>
+    <div ng-bind="user.sex"></div>
+
+    <input ng-model="user.name" type="text" placeholder="name">
+    <input ng-model="user.age" type="text" placeholder="age">
+    <input ng-model="user.sex" type="text" placeholder="sex">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <script>
+        var scope = {user:{name:'Amy',age:26,sex:'female'}};
+        $('[ng-bind]').each(function(index,ele){
+            var object = $(this).attr('ng-bind').split('.');
+            var property = object.pop();
+            Object.observe(scope[object],function(changes){
+                if(changes[0].name === property){
+                    $(ele).html(scope[object][property]);
+                }
+            })
+        });
+        $('[ng-model]').each(function(index,ele){
+            var object = $(this).attr('ng-model').split('.');
+            var property = object.pop();
+            Object.observe(scope[object],function(changes){
+                if(changes[0].name === property){
+                    if($(ele).val() !== scope[object][property]){
+                        $(ele).val(scope[object][property]);
+                    }
+                }
+            });
+            console.log($(this));
+            $(ele).keyup(function(event){
+                scope[object][property] = $(this).val();
+                console.log(scope[object][property]);
+            });
+
+        })
+    </script>
+</body>
+</html>
